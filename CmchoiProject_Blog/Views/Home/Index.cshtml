@@ -1,0 +1,91 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@using CmchoiProject_Blog.Models
+@model IPagedList<BlogPost>
+
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<!--The search form -->
+
+<body style="background-color:lightgray">
+    <div class="row mb-3">
+        <div class="col-md-3"></div>
+        <div class="col-md-7">
+
+            @using (Html.BeginForm("Index", "Home", FormMethod.Get, htmlAttributes: new { @class = "form" }))
+            {
+
+                <form>
+                    <div class="input-group">
+                        <input id="searchStr" name="searchStr" type="text" class="input-block-level form-control" placeholder="Search">
+                        <div class="input-group-btn">
+                            <button id="searchStr" name="searchStr" class="btn btn-default" type="submit">
+                                <i>Search</i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+
+
+                @*<div class="controls controls-row search-row">
+                <input id="searchStr" name="searchStr" class="input-block-level" type="text"
+                        placeholder="Search">
+                <button id="searchStr" name="searchStr" class="btn btn-info btn-sm" type="submit">Search</button>
+
+
+                </div>*@
+            }
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div>
+
+        @foreach (var post in Model)
+        {
+            <div class="row">
+                <div class="col-md-2"></div>
+
+
+                <div class="col-md-3">
+                    <a href="@Url.Action("Details","BlogPosts", new { slug = post.Slug })">
+                        @if (string.IsNullOrWhiteSpace(post.MedialUrl))
+                        {
+                            <img src="~/img/post-sample-image.jpg" class="media-object" style="border-radius:10%; width:60%; height:80%; float:right;">
+                        }
+                        else
+                        {
+                            <img src="@Url.Content(post.MedialUrl)" class="media-object" style="border-radius:10%; width:60%; height:80%; float:right;">
+                        }
+                    </a>
+                </div>
+
+                <div class="col-md-7 mt-2">
+                    <a href="@Url.Action("Details","BlogPosts", new { slug = post.Slug })">
+                        <h3 class="media-heading"> @post.Title</h3>
+                        <h5 class="media-heading"> @post.Title</h5>
+                        <p style="font-size:small;color:grey;font-style:italic;">
+                            published by Caleb Choi
+                            @post.Created.ToString("MMMM d, yyyy")
+                        </p>
+                    </a>
+                </div>
+            </div>
+            <br>
+        }
+
+        <!-- Paging to the List -->
+        <div>
+            <center>
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchStr = ViewBag.Search }))
+            </center>
+        </div>
+
+
+    </div>
+</body>
